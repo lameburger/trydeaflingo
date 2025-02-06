@@ -1,0 +1,6 @@
+/* Override all background colors to black */
+body, html {
+    background-color: black !important;
+  }
+  
+  
