@@ -12,33 +12,41 @@ import { colorSchemes, typography, shadows, shape } from './themePrimitives';
 function AppTheme(props) {
   const { children, disableCustomTheme, themeComponents } = props;
   const theme = React.useMemo(() => {
-    return disableCustomTheme
-      ? {}
-      : createTheme({
-          // For more details about CSS variables configuration, see https://mui.com/material-ui/customization/css-theme-variables/configuration/
-          cssVariables: {
-            colorSchemeSelector: 'data-mui-color-scheme',
-            cssVarPrefix: 'template',
-          },
-          colorSchemes, // Recently added in v6 for building light & dark mode app, see https://mui.com/material-ui/customization/palette/#color-schemes
-          typography,
-          shadows,
-          shape,
-          components: {
-            ...inputsCustomizations,
-            ...dataDisplayCustomizations,
-            ...feedbackCustomizations,
-            ...navigationCustomizations,
-            ...surfacesCustomizations,
-            ...themeComponents,
-          },
-        });
+    if (disableCustomTheme) {
+      return {};
+    }
+
+    // Create theme with only dark mode
+    const darkTheme = createTheme({
+      // Remove cssVariables configuration since we're not switching between modes
+      palette: {
+        mode: 'dark',
+        // Assuming colorSchemes.dark contains your dark theme colors
+        ...(colorSchemes.dark?.palette || {}),
+      },
+      typography,
+      shadows,
+      shape,
+      components: {
+        ...inputsCustomizations,
+        ...dataDisplayCustomizations,
+        ...feedbackCustomizations,
+        ...navigationCustomizations,
+        ...surfacesCustomizations,
+        ...themeComponents,
+      },
+    });
+
+    return darkTheme;
   }, [disableCustomTheme, themeComponents]);
+
   if (disableCustomTheme) {
     return <React.Fragment>{children}</React.Fragment>;
   }
+
   return (
-    <ThemeProvider theme={theme} disableTransitionOnChange>
+    <ThemeProvider theme={theme}>
+      {/* Removed disableTransitionOnChange since we're not switching themes */}
       {children}
     </ThemeProvider>
   );
