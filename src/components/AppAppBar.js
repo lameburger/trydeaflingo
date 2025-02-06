@@ -164,6 +164,14 @@ export default function AppAppBar() {
   const [modalOpen, setModalOpen] = React.useState(false);
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
 
+  // Function to scroll to the features section
+  const scrollToFeatures = () => {
+    const featuresSection = document.getElementById('features');
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const toggleDrawer = (newOpen) => () => {
     setDrawerOpen(newOpen);
   };
@@ -217,7 +225,12 @@ export default function AppAppBar() {
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
               {!isMobile && (
                 <>
-                  <Button variant="text" color="success" size="medium">
+                  <Button
+                    variant="text"
+                    color="success"
+                    size="medium"
+                    onClick={scrollToFeatures}
+                  >
                     Features
                   </Button>
                   <Button
@@ -262,7 +275,15 @@ export default function AppAppBar() {
                     <CloseRoundedIcon />
                   </IconButton>
                 </Box>
-                <Button variant="text" color="info" fullWidth>
+                <Button
+                  variant="text"
+                  color="info"
+                  fullWidth
+                  onClick={() => {
+                    scrollToFeatures();
+                    setDrawerOpen(false);
+                  }}
+                >
                   Features
                 </Button>
                 <Button

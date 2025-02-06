@@ -13,6 +13,8 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
+import { useNavigate } from 'react-router-dom';
+
 
 function Copyright() {
   return (
@@ -27,37 +29,106 @@ function Copyright() {
 }
 
 export default function Footer() {
+  const navigate = useNavigate();
+
+  // Helper function to scroll to a specific element id
+  const scrollToId = (id) => (event) => {
+    event.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <Box component="footer" sx={{ bgcolor: 'black', py: 6, px: 2 }}>
       <Container maxWidth="lg">
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 4,
+          }}
+        >
           <img src="images/deaflingo_dark.png" alt="Deaflingo Logo" style={{ width: 50 }} />
           <Stack direction="row" spacing={2} sx={{ mt: { xs: 3, sm: 0 } }}>
-            <IconButton color="inherit" href="#"><TwitterIcon /></IconButton>
-            <IconButton color="inherit" href="#"><LinkedInIcon /></IconButton>
-            <IconButton color="inherit" href="#"><InstagramIcon /></IconButton>
-            <IconButton color="inherit" href="#"><EmailIcon /></IconButton>
-            <IconButton color="inherit" href="#"><PhoneIcon /></IconButton>
+            <IconButton color="inherit" href="#">
+              <TwitterIcon />
+            </IconButton>
+            <IconButton color="inherit" href="#">
+              <LinkedInIcon />
+            </IconButton>
+            <IconButton color="inherit" href="#">
+              <InstagramIcon />
+            </IconButton>
+            <IconButton color="inherit" href="#">
+              <EmailIcon />
+            </IconButton>
+            <IconButton color="inherit" href="#">
+              <PhoneIcon />
+            </IconButton>
           </Stack>
         </Box>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around', textAlign: 'center', mb: 4 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-around',
+            textAlign: 'center',
+            mb: 4,
+          }}
+        >
           <Box>
-            <Typography variant="body2" fontWeight="medium">Contact Us</Typography>
-            <Link color="text.secondary" variant="body2" href="#">Email</Link><br />
-            <Link color="text.secondary" variant="body2" href="#">Phone</Link>
+            <Typography variant="body2" fontWeight="medium">
+              Contact Us
+            </Typography>
+            <Link color="text.secondary" variant="body2" href="#">
+              Email
+            </Link>
+            <br />
+            <Link color="text.secondary" variant="body2" href="#">
+              Phone
+            </Link>
           </Box>
           <Box>
-            <Typography variant="body2" fontWeight="medium">Features</Typography>
-            <Link color="text.secondary" variant="body2" href="#">Our Features</Link>
+            <Typography variant="body2" fontWeight="medium">
+              Features
+            </Typography>
+            <Link
+              color="text.secondary"
+              variant="body2"
+              href="#"
+              onClick={scrollToId('features')}
+            >
+              Our Features
+            </Link>
           </Box>
           <Box>
-            <Typography variant="body2" fontWeight="medium">Who Are We</Typography>
-            <Link color="text.secondary" variant="body2" href="#">About Us</Link>
+            <Typography variant="body2" fontWeight="medium">
+              Who Are We
+            </Typography>
+            <Link
+              color="text.secondary"
+              variant="body2"
+              href="#"
+              onClick={scrollToId('whoarewe')}
+            >
+              About Us
+            </Link>
           </Box>
           <Box>
-            <Typography variant="body2" fontWeight="medium">Legal Stuff</Typography>
-            <Link color="text.secondary" variant="body2" href="#">Terms of Service</Link><br />
-            <Link color="text.secondary" variant="body2" href="#">Privacy Policy</Link>
+            <Typography variant="body2" fontWeight="medium">
+              Legal Stuff
+            </Typography>
+            <Link color="text.secondary" variant="body2" onClick={() => navigate('/terms-of-service')}>
+              Terms of Service
+            </Link>
+            <br />
+            <Link color="text.secondary" variant="body2" onClick={() => navigate('/privacy-policy')}>
+              Privacy Policy
+            </Link>
           </Box>
         </Box>
         <Copyright />
