@@ -63,8 +63,8 @@ export default function FAQ() {
           </AccordionSummary>
           <AccordionDetails>
             <Typography variant="body2" gutterBottom>
-              Think Duolingo but for sign language meets a typing website. The main premise of the app will be to offer a skew of lessons that will help teach basic sign language, this includes the alphabet, basic greetings, and so on. However, we also off a playground feature that allows the user to try signing 
-              as if they were on a typing website. We call this feature "Playground" where the user will be met with many words in many categories.
+              Think Duolingo but for sign language meets a typing website. The main premise of the app will be to offer a skew of lessons that will help teach basic sign language. This includes the alphabet, basic greetings, and so on. In this mix will also be a playground feature that allows the user to try signing 
+              as if they were on a typing website.
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -75,7 +75,7 @@ export default function FAQ() {
           </AccordionSummary>
           <AccordionDetails>
             <Typography variant="body2" gutterBottom>
-              Literally just your phone.
+              Just a device with a camera.
             </Typography>
           </AccordionDetails>
         </Accordion>
