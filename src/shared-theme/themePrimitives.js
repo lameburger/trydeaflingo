@@ -138,13 +138,13 @@ export const getDesignTokens = (mode) => {
       },
       divider: mode === 'dark' ? alpha(gray[700], 0.6) : alpha(gray[300], 0.4),
       background: {
-        default: 'hsl(0, 0%, 99%)',
-        paper: 'hsl(220, 35%, 97%)',
+        default: gray[900],
+        paper: 'hsl(0, 0.00%, 0.00%)',
         ...(mode === 'dark' && { default: gray[900], paper: 'hsl(0, 0.00%, 0.00%)' }),
       },
       text: {
-        primary: gray[800],
-        secondary: gray[600],
+        primary: 'hsl(0, 0%, 100%)',
+          secondary: gray[400],
         warning: orange[400],
         ...(mode === 'dark' && {
           primary: 'hsl(0, 0%, 100%)',
@@ -152,8 +152,8 @@ export const getDesignTokens = (mode) => {
         }),
       },
       action: {
-        hover: alpha(gray[200], 0.2),
-        selected: `${alpha(gray[200], 0.3)}`,
+        hover: alpha(gray[600], 0.2),
+        selected: `${alpha(gray[600], 0.3)}`,
         ...(mode === 'dark' && {
           hover: alpha(gray[600], 0.2),
           selected: alpha(gray[600], 0.3),
