@@ -84,13 +84,18 @@ export default function Footer() {
             <Typography variant="body2" fontWeight="medium">
               Contact Us
             </Typography>
-            <Link color="text.secondary" variant="body2" href="#">
+            <Link
+              color="text.secondary"
+              variant="body2"
+              href="mailto:lane.t.burgett@vanderbilt.edu"
+            >
               Email
             </Link>
             <br />
-            <Link color="text.secondary" variant="body2" href="#">
-              Phone
+            <Link color="text.secondary" variant="body2" href="tel:7854790219">
+              Call
             </Link>
+
           </Box>
           <Box>
             <Typography variant="body2" fontWeight="medium">
