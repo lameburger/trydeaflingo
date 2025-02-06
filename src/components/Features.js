@@ -23,7 +23,7 @@ const items = [
     icon: <ViewQuiltRoundedIcon />,
     title: 'Real-Time Sign Language Recognition',
     description:
-      "SignFlow revolutionizes sign language learning by using real-time AI-powered recognition. No need for pre-recorded videos—just use your camera and start signing with interactive feedback that helps you improve instantly.",
+      "Deaflingo revolutionizes sign language learning by using real-time AI-powered recognition. No need for pre-recorded videos—just use your camera and start signing with interactive feedback that helps you improve instantly.",
     image: "/images/demo.gif", // Mobile fallback image
     images: ["/images/demo.gif", "/images/hello.png"],
   },
@@ -31,7 +31,7 @@ const items = [
     icon: <EdgesensorHighRoundedIcon />,
     title: 'Learn Multiple Sign Languages with a Variety of Lessons',
     description:
-      "Expand your signing skills beyond a single language! SignFlow provides structured lessons covering ASL, BSL, and other major sign languages. With an intuitive interface and diverse lesson plans, mastering a new sign language has never been easier.",
+      "Expand your signing skills beyond a single language! Deaflingo provides structured lessons covering ASL, BSL, and other major sign languages. With an intuitive interface and diverse lesson plans, mastering a new sign language has never been easier.",
     image: "/images/lessons_sc.png", // Mobile fallback image
     images: ["/images/lessons_sc.png", "/images/lessons_languages_sc.png", "/images/onboarding_sc.png"],
   },
@@ -39,7 +39,7 @@ const items = [
     icon: <DevicesRoundedIcon />,
     title: 'Gamified Learning with Competitive Rankings',
     description:
-      "Turn learning into a fun challenge! With SignFlow’s gamified ranking system, track your progress, compete with friends, and unlock achievements as you advance. Every sign you master brings you closer to the top of the leaderboard!",
+      "Turn learning into a fun challenge! With Deaflingo gamified ranking system, track your progress, compete with friends, and unlock achievements as you advance. Every sign you master brings you closer to the top of the leaderboard!",
     image: "/images/ranking.png", // Mobile fallback image
     images: ["/images/ranking.png"],
   },
