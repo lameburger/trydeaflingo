@@ -178,10 +178,10 @@ export default function Features() {
             gutterBottom
             sx={{ color: 'text.primary', fontWeight: 'bold' }}
           >
-            Deaflingo
+            Introducing Deaflingo
           </Typography>
           <Typography variant="h5" sx={{ color: 'text.secondary', mb: { xs: 2, sm: 4 } }}>
-            An easier way to learn sign language.
+            A better and easier way to learn sign language.
           </Typography>
         </Box>
       </Fade>

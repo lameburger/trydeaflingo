@@ -13,6 +13,7 @@ import Testimonials from '../components/Testimonials';
 import FAQ from '../components/FAQ';
 import Footer from '../components/Footer';
 import WhoAreWe from '../components/WhoAreWe';
+import StatsComponent from '../components/StatsComponent';
 
 export default function MarketingPage(props) {
   return (
@@ -23,6 +24,7 @@ export default function MarketingPage(props) {
       <div>
         <DeafStatistics></DeafStatistics>
         <Features />
+        <StatsComponent></StatsComponent>
         <Highlights />
         <FAQ />
         <WhoAreWe></WhoAreWe>

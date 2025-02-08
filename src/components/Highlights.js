@@ -81,7 +81,7 @@ export default function Highlights() {
             }}
           >
             <Typography component="h2" variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
-              Quick Stats.
+              Our Visions
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary' }}>
               Here are just some of the goals that we hope to achieve.

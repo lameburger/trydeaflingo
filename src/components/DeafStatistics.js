@@ -94,10 +94,10 @@ export default function DeafStatistics() {
               animation: `${fadeInUp} 1s ease-in-out`,
             }}
           >
-            The Deaf Community in Numbers
+          Some Quick Stats
           </Typography>
           <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-            Here is the impact and scale of the deaf and hard-of-hearing community worldwide.
+            This is why we need better access to sign language learning services.
           </Typography>
         </Box>
       </Fade>
