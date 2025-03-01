@@ -33,7 +33,7 @@ const items = [
     description:
       "Expand your signing skills beyond a single language! Deaflingo provides structured lessons covering ASL, BSL, and other major sign languages. With an intuitive interface and diverse lesson plans, mastering a new sign language has never been easier.",
     image: "/images/lessons_sc.png", // Mobile fallback image
-    images: ["/images/lessons_sc.png", "/images/lessons_languages_sc.png", "/images/onboarding_sc.png"],
+    images: ["/images/lessons.gif", "/images/lessons_languages_sc.png", "/images/onboarding_sc.png"],
   },
   {
     icon: <DevicesRoundedIcon />,

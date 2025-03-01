@@ -1,138 +1,100 @@
-// ----- Firebase Configuration & Initialization -----
-const firebaseConfig = {
-    apiKey: "AIzaSyA3v2ipO1Ja3HaGaol0lTABB7mvcix5Rmk",
-    authDomain: "deaflingo-nivvay.firebaseapp.com",
-    projectId: "deaflingo-nivvay",
-    storageBucket: "deaflingo-nivvay.firebasestorage.app",
-    messagingSenderId: "189847137203",
-    appId: "1:189847137203:web:4f40478bf749b0228b79c6"
+// ----- Lesson 1 Only Configuration -----
+const lessonParams = {
+    lessonId: "lesson1",
+    idx: 0
   };
-  
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-  const db = firebase.firestore();
-  
-  // ----- Global Variables for Playground -----
-  const globalWordList = ['after', 'airplane', 'alligator', 'animal', 'apple', 'arm', 'aunt', 'bad', 'balloon', 'bed', 'bedroom', 'bee', 'before', 'better', 'bird', 'black', 'blue', 'boat', 'book', 'boy', 'brother', 'brown', 'bug', 'bye', 'car', 'carrot', 'cat', 'cereal', 'cheek', 'child', 'chin', 'chocolate', 'closet', 'cow', 'cute', 'dad', 'dirty', 'dog', 'donkey', 'drawer', 'dryer', 'duck', 'ear', 'elephant', 'eye', 'face', 'fast', 'feet', 'fine', 'finger', 'fish', 'flower', 'food', 'frenchfries', 'frog', 'giraffe', 'girl', 'glasswindow', 'goose', 'grandma', 'grandpa', 'grass', 'gum', 'hair', 'happy', 'hat', 'head', 'helicopter', 'hello', 'hen', 'home', 'horse', 'hot', 'icecream', 'jacket', 'jeans', 'kitty', 'lamp', 'later', 'lion', 'lips', 'mad', 'man', 'milk', 'mitten', 'mom', 'moon', 'morning', 'mouse', 'mouth', 'napkin', 'night', 'noisy', 'nose', 'now', 'nuts', 'old', 'outside', 'owl', 'pajamas', 'pen', 'pencil', 'penny', 'person', 'pig', 'pizza', 'please', 'pool', 'potty', 'pretty', 'puppy', 'radio', 'rain', 'red', 'refrigerator', 'room', 'scissors', 'shirt', 'shoe', 'shower', 'snack', 'snow', 'sticky', 'sun', 'table', 'thankyou', 'tiger', 'time', 'tomorrow', 'tongue', 'tooth', 'toothbrush', 'tree', 'uncle', 'underwear', 'vacuum', 'weus', 'white', 'wolf', 'yellow', 'yesterday', 'yucky', 'zebra', 'zipper'];
-  // (globalWordList is in alphabetical order)
-  
-  let wordList = []; // randomized list for current test
-  let currentIdx = 0;
-  let idxWord = "";
-  let model = null;
-  let timerInterval = null;
-  let countdownTime = 60; // seconds
   
   // ----- Video, Canvas, and UI Elements -----
   const video4 = document.createElement('video');
   const out4 = document.getElementsByClassName('output4')[0];
-  const wordCounter = document.querySelector('.word-counter');
+  const wordCounter = document.getElementById("word-counter");
   const actionDisplay = document.querySelector('.waiting-text');
-  const controlsElement4 = document.getElementsByClassName('control-box')[0];
+  const controlsElement4 = document.getElementsByClassName('control4')[0];
   const canvasCtx4 = out4.getContext('2d');
   
-  // Set video dimensions for mobile screens.
-  video4.width = window.innerWidth;
-  video4.height = window.innerHeight;
+  // Set video dimensions for a phone screen.
+  video4.width = window.innerWidth * .2;
+  video4.height = window.innerHeight * .2;
   
-  // ----- Countdown Timer Functions -----
-  function formatTime(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
-  }
+  let currentIdx = lessonParams.idx;
+  let wordList = getActionsForLesson(lessonParams.lessonId);
+  let idxWord = "";
+  const totalWords = wordList.length;
   
-  function startCountdown() {
-    let timeLeft = countdownTime;
-    document.getElementById("timer").innerText = formatTime(timeLeft);
-    timerInterval = setInterval(() => {
-      timeLeft--;
-      if (timeLeft <= 0) {
-        document.getElementById("timer").innerText = "00:00";
-        clearInterval(timerInterval);
-        completeTest();
-      } else {
-        document.getElementById("timer").innerText = formatTime(timeLeft);
-      }
-    }, 1000);
-  }
-  
-  function stopCountdown() {
-    clearInterval(timerInterval);
-  }
-  
-  // ----- Shuffle Function -----
-  function shuffle(array) {
-    let currentIndex = array.length, temporaryValue, randomIndex;
-    while (0 !== currentIndex) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
+  // ----- Set Actions for Lesson 1 -----
+  function getActionsForLesson(lessonId) {
+    if (lessonId === "lesson1") {
+      return ["bye", "hello", "please", "thankyou"];
     }
-    return array;
+    return [];
   }
   
-  // ----- Populate Visible Word Container -----
-  // Only displays a block (window) of 20 words at a time.
-  function updateWordContainerWindow() {
-    const blockStart = Math.floor(currentIdx / 20) * 20;
-    const visibleWords = wordList.slice(blockStart, blockStart + 20);
-    const container = document.getElementById("word-container");
-    container.innerHTML = "";
-    visibleWords.forEach((word, idx) => {
-      const wordSpan = document.createElement("span");
-      wordSpan.className = "word";
-      wordSpan.id = `word-${blockStart + idx}`;
-      wordSpan.innerText = word;
-      // Highlight the current word relative to this window.
-      if (blockStart + idx === currentIdx) {
-        wordSpan.classList.add("primary");
-      }
-      container.appendChild(wordSpan);
-    });
-  }
+  let actions = getActionsForLesson(lessonParams.lessonId);
   
   // ----- UI Update Functions -----
   function updateCurrentWord(word) {
     idxWord = word;
+    // Update the word to sign.
     const wordElement = document.getElementById("current-sign");
     if (wordElement) {
       wordElement.innerText = word;
     }
-    updateWordContainerWindow();
-  }
-  
-  function restartTest() {
-    currentIdx = 0;
-    // Randomize the word list for this test
-    wordList = shuffle([...globalWordList]);
-    updateWordContainerWindow();
-    updateCurrentWord(wordList[currentIdx]);
-    document.getElementById("word-counter").innerText = `0/${wordList.length}`;
-    actionDisplay.innerText = "";
-    document.getElementById("result-modal").style.display = "none";
-    startCountdown();
-  }
-  
-  // ----- Backend: Update Progress Functions -----
-  function incrementSignsCompleted(userId) {
-    if (!userId) {
-      console.error("No userId provided for incrementing signs.");
-      return;
+    // Update the progress counter (displayed as x/4).
+    if (wordCounter) {
+      // If lesson is complete, show totalWords/totalWords.
+      if (word === "Lesson Complete!") {
+        wordCounter.innerText = `${totalWords}/${totalWords}`;
+      } else {
+        wordCounter.innerText = `${currentIdx}/${totalWords}`;
+      }
     }
-    const userRef = db.collection('users').doc(userId);
-    userRef.set({
-      signs_completed: firebase.firestore.FieldValue.increment(1)
-    }, { merge: true })
-    .then(() => {
-      console.log("Signs completed incremented for user " + userId);
-    })
-    .catch((error) => {
-      console.error("Error incrementing signs completed: ", error);
-    });
+    // Show restart button if lesson complete.
+    const restartButton = document.getElementById("restart-button");
+    if (word === "Lesson Complete!" && restartButton) {
+      restartButton.style.display = "block";
+    }
+  }
+  
+  function restartLesson() {
+    currentIdx = 0;
+    if (wordList.length > 0) {
+      updateCurrentWord(wordList[currentIdx]);
+      updateProgressBar(currentIdx, totalWords);
+    }
+    const restartButton = document.getElementById("restart-button");
+    if (restartButton) {
+      restartButton.style.display = "none";
+    }
+  }
+  
+  // ----- Lesson Completion Logic -----
+  async function completeLesson() {
+    updateCurrentWord("Lesson Complete!");
+    updateProgressBar(totalWords, totalWords);
+    showConfetti();
+    actionDisplay.innerText = "Congratulations! Lesson complete.";
+    const skipButton = document.getElementById("skip-button");
+    if (skipButton) {
+      skipButton.disabled = true;
+    }
+  }
+  
+  async function nextWord() {
+    if (currentIdx < wordList.length - 1) {
+      currentIdx++;
+      updateCurrentWord(wordList[currentIdx]);
+      updateProgressBar(currentIdx, totalWords);
+    } else {
+      await completeLesson();
+    }
+  }
+  
+  // ----- Progress Bar Update -----
+  function updateProgressBar(current, total) {
+    const progressBar = document.querySelector(".progress-bar");
+    if (!progressBar) return;
+    const progressPercentage = ((current) / total) * 100;
+    progressBar.style.width = `${progressPercentage}%`;
   }
   
   // ----- Confetti Animation -----
@@ -143,48 +105,109 @@ const firebaseConfig = {
         spread: 70,
         origin: { y: 0.6 }
       });
-    }
-  }
-  
-  // ----- Test Completion Logic -----
-  function completeTest() {
-    updateCurrentWord("Test Complete!");
-    stopCountdown();
-    // Calculate signs per minute based on words completed during 60 seconds.
-    const spm = currentIdx; // since test duration is 1 minute
-    actionDisplay.innerText = "Congratulations! Test complete.";
-    showConfetti();
-    const resultModal = document.getElementById("result-modal");
-    document.getElementById("result-stats").innerText = `You signed ${currentIdx} words | SPM: ${spm}`;
-    resultModal.style.display = "flex";
-  }
-  
-  // ----- Proceed to Next Word -----
-  function nextWord() {
-    if (currentIdx < wordList.length - 1) {
-      currentIdx++;
-      updateCurrentWord(wordList[currentIdx]);
-      document.getElementById("word-counter").innerText = `${currentIdx}/${wordList.length}`;
-      // incrementSignsCompleted(userId); // Uncomment and pass a valid userId if needed.
     } else {
-      completeTest();
+      console.log("Confetti triggered (placeholder).");
     }
   }
   
-  // ----- Recognition Model Loading -----
-  async function loadRecognitionModel() {
-    try {
-      model = await tf.loadLayersModel('/playground_model/model.json');
-      console.log('TFJS playground model loaded.');
-      model.summary();
-    } catch (error) {
-      console.error('Error loading playground model:', error);
+  // ----- DOMContentLoaded Listeners -----
+  document.addEventListener("DOMContentLoaded", () => {
+    // Initialize display with the first word.
+    if (wordList.length > 0) {
+      updateCurrentWord(wordList[currentIdx]);
+      updateProgressBar(currentIdx, totalWords);
     }
+    const skipButton = document.getElementById("skip-button");
+    const restartButton = document.getElementById("restart-button");
+    if (skipButton) {
+      skipButton.addEventListener("click", nextWord);
+    }
+    if (restartButton) {
+      restartButton.addEventListener("click", restartLesson);
+    }
+  });
+  
+  document.addEventListener("DOMContentLoaded", () => {
+    const showSignButton = document.getElementById("show-sign-button");
+    if (showSignButton) {
+      showSignButton.addEventListener("click", showSignModal);
+    }
+  });
+  
+  function showSignModal() {
+    let signName = idxWord;
+    if (!signName || signName === "Lesson Complete!") {
+      console.warn("No valid sign to display.");
+      return;
+    }
+    
+    let modal = document.getElementById("signModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "signModal";
+      modal.style.position = "fixed";
+      modal.style.top = "0";
+      modal.style.left = "0";
+      modal.style.width = "100%";
+      modal.style.height = "100%";
+      modal.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+      modal.style.display = "flex";
+      modal.style.justifyContent = "center";
+      modal.style.alignItems = "center";
+      modal.style.zIndex = "2000";
+      document.body.appendChild(modal);
+    }
+    
+    let videoElem = document.getElementById("modalVideo");
+    if (!videoElem) {
+      videoElem = document.createElement("video");
+      videoElem.id = "modalVideo";
+      // Adjusted size to be large but not too big.
+      videoElem.style.width = "50vw";
+      videoElem.style.height = "auto";
+      videoElem.controls = true;
+      videoElem.setAttribute("playsinline", "");
+      modal.appendChild(videoElem);
+    }
+    
+    videoElem.src = `/videos/${signName}.mp4`;
+    videoElem.load();
+    videoElem.play().catch((error) => {
+      console.error("Error playing video:", error);
+    });
+    
+    modal.style.display = "flex";
+    
+    setTimeout(() => {
+      videoElem.pause();
+      videoElem.currentTime = 0;
+      modal.style.display = "none";
+    }, 3000);
   }
   
-  // ----- Recognition Processing -----
+  
+  // ----- Recognition Logic (WASM-Based Integration) -----
   const sequenceLengthRecognition = 50;
   const landmarksBufferRecognition = [];
+  let model = null;
+  
+  function getModelPath(lessonId) {
+    if (lessonId === "lesson1") {
+      return '/lesson1_model/model.json';
+    }
+    return '/lesson1_model/model.json';
+  }
+  
+  async function loadRecognitionModel() {
+    try {
+      const modelPath = getModelPath(lessonParams.lessonId);
+      model = await tf.loadLayersModel(modelPath);
+      console.log('TFJS recognition model loaded.');
+      model.summary();
+    } catch (error) {
+      console.error('Error loading recognition model:', error);
+    }
+  }
   
   function processLandmarksRecognition(results) {
     const out = new Array(126).fill(0);
@@ -223,26 +246,20 @@ const firebaseConfig = {
       const inputTensor = tf.tensor(landmarksBufferRecognition).expandDims(0);
       const prediction = model.predict(inputTensor);
       const predictedIndex = prediction.argMax(-1).dataSync()[0];
-      // Use globalWordList (alphabetical order) for label matching.
-      const recognizedWord = globalWordList[predictedIndex];
-      console.log(`Recognized word: ${recognizedWord}`);
-      const currentGestureElement = document.getElementById('current-gesture');
-      if (currentGestureElement) {
-        currentGestureElement.innerText = recognizedWord;
-      }
+      document.getElementById('current-gesture').innerText = wordList[predictedIndex];
       inputTensor.dispose();
       prediction.dispose();
-  
-      if (recognizedWord === idxWord) {
+      
+      // Move to next word if the recognized sign matches the expected word.
+      if (wordList[predictedIndex] === idxWord) {
         nextWord();
       }
     }
   }
   
-  // ----- Start Recognition -----
   async function startRecognition() {
     await loadRecognitionModel();
-  
+    
     let videoElement = video4;
     if (!videoElement) {
       videoElement = document.createElement('video');
@@ -251,7 +268,7 @@ const firebaseConfig = {
       document.body.appendChild(videoElement);
       console.log("Created hidden video element for recognition.");
     }
-  
+    
     const handsRecognition = new Hands({
       locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
     });
@@ -274,101 +291,8 @@ const firebaseConfig = {
     recognitionCamera.start();
   }
   
-  // ----- Modal for Showing Sign Video -----
-  function showSignModal() {
-    let signName = idxWord;
-    if (!signName || signName === "Test Complete!") {
-      console.warn("No valid sign to display.");
-      return;
-    }
-  
-    let modal = document.getElementById("signModal");
-    if (!modal) {
-      modal = document.createElement("div");
-      modal.id = "signModal";
-      modal.style.position = "fixed";
-      modal.style.top = "0";
-      modal.style.left = "0";
-      modal.style.width = "100%";
-      modal.style.height = "100%";
-      modal.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-      modal.style.display = "flex";
-      modal.style.justifyContent = "center";
-      modal.style.alignItems = "center";
-      modal.style.zIndex = "2000";
-      document.body.appendChild(modal);
-    }
-  
-    let videoElem = document.getElementById("modalVideo");
-    if (!videoElem) {
-      videoElem = document.createElement("video");
-      videoElem.id = "modalVideo";
-      videoElem.style.maxWidth = "90%";
-      videoElem.style.maxHeight = "90%";
-      videoElem.controls = true;
-      videoElem.setAttribute("playsinline", "");
-      modal.appendChild(videoElem);
-    }
-  
-    videoElem.src = `assets/videos/${signName}.mp4`;
-    videoElem.load();
-    videoElem.play().catch((error) => {
-      console.error("Error playing video:", error);
-    });
-  
-    modal.style.display = "flex";
-  
-    setTimeout(() => {
-      videoElem.pause();
-      videoElem.currentTime = 0;
-      modal.style.display = "none";
-    }, 3000);
-  }
-  
-  // ----- DOMContentLoaded Listeners -----
-  document.addEventListener("DOMContentLoaded", () => {
-    const startButton = document.getElementById("start-button");
-    startButton.addEventListener("click", () => {
-      document.getElementById("pre-test-controls").style.display = "none";
-      document.getElementById("active-test-controls").style.display = "block";
-      wordList = shuffle([...globalWordList]);
-      currentIdx = 0;
-      updateWordContainerWindow();
-      updateCurrentWord(wordList[currentIdx]);
-      document.getElementById("word-counter").innerText = `0/${wordList.length}`;
-      startCountdown();
-      startRecognition();
-    });
-  
-    const skipButton = document.getElementById("skip-current");
-    if (skipButton) {
-      skipButton.addEventListener("click", nextWord);
-    }
-  
-    const viewSignButton = document.getElementById("view-current");
-    if (viewSignButton) {
-      viewSignButton.addEventListener("click", showSignModal);
-    }
-  
-    const restartButton = document.getElementById("restart-button");
-    if (restartButton) {
-      restartButton.addEventListener("click", () => {
-        document.getElementById("active-test-controls").style.display = "block";
-        restartTest();
-      });
-    }
-  
-    const modalRestart = document.getElementById("modal-restart");
-    if (modalRestart) {
-      modalRestart.addEventListener("click", () => {
-        document.getElementById("result-modal").style.display = "none";
-        restartTest();
-      });
-    }
-  });
-  
-  // Ensure the WASM backend is set before starting recognition.
   tf.setBackend('wasm').then(() => {
     console.log("WASM backend set for recognition.");
+    startRecognition();
   });
   
