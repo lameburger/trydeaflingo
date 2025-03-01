@@ -1,116 +1,336 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <!-- Bulma CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="icon" href="favicon.ico">
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.1/control_utils.css" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.1/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.1/control_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.2/drawing_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.1/holistic.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script>
-  <link rel="stylesheet" href="./static/styles/styles.css">
-  
-</head>
-<body>
-  <style>
-    body, html {
-      height: 100%;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-    }
-    /* .main-content {
-      flex: 1;
-    } */
-    .footer {
-      background-color: #f8f9fa;
-      padding: 10px 0;
-      text-align: center;
-    }
-    .footer a {
-      margin: 0 10px;
-      text-decoration: none;
-      color: #007bff;
-    }
-  </style>
-  <header>
-    <a href="index.html">
-      <img src="./images/demo_logo.png" alt="Logo" class="logo">
-  </a>
-  </header>
-
-  <div class="loading-screen">
-    <div class="spinner"></div>
-  </div>
-
-  <div class="main-content" style="display: none;">
-    <div class="text-box">
-      <div class="container">
-        <div class="row justify-content-between">
-          <div class="col-md-6 text-between">
-            <div class="count_container d-flex justify-content-between">
-              <div class="word-counter">0/5</div>
-              <div class="language-select">
-                <img src="./images/world.png" id="world-image" style="width: 20px; height: 20px; margin-right: 5px;">
-                <a id="lang">english</a>
-              </div>
-            </div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Playground</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.1/camera_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.1/control_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.2/drawing_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.1/holistic.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "JetBrains Mono", monospace;
+        background: #14181b;
+        color: #e0e0e0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .mobile-container {
+        width: 100%;
+        max-width: 480px;
+        padding: calc(env(safe-area-inset-top, 20px) + 15px) 24px 0 24px;
+        transform: scale(0.8);
+        transform-origin: center center;
+      }
+      .material {
+        background: #1e1e1e;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        margin-bottom: 24px;
+      }
+      .combined-container {
+        display: flex;
+        flex-direction: column;
+      }
+      .camera-feed {
+        position: relative;
+        width: 100%;
+      }
+      .camera-feed canvas.output4 {
+        width: 100%;
+        display: block;
+      }
+      .overlay {
+        position: absolute;
+        top: 10px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 12px;
+        z-index: 10;
+      }
+      .overlay h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 800;
+        color: #27ff00;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      }
+      .settings-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        transition: background 0.2s;
+      }
+      .settings-button:hover {
+        background: rgba(39, 255, 0, 0.1);
+      }
+      .control-box {
+        padding: 16px;
+        background: #121212;
+        border-top: 2px solid #27ff00;
+      }
+      .control-box h2 {
+        margin: 0 0 16px;
+        font-size: 28px;
+        font-weight: 800;
+        color: #27ff00;
+        text-align: center;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .info-row span,
+      .word-counter {
+        font-size: 16px;
+        font-weight: 800;
+        color: #ffffff;
+      }
+      .timer {
+        font-size: 14px;
+        color: #ffffff;
+      }
+      .waiting-text {
+        margin-bottom: 16px;
+        font-size: 18px;
+        text-align: center;
+        color: #ffffff;
+      }
+      .word-container {
+        background: #212121;
+        border-radius: 8px;
+        padding: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        min-height: 100px;
+        margin-bottom: 16px;
+      }
+      .word-container .word {
+        font-size: 14px;
+        color: #555;
+        transition: color 0.3s;
+      }
+      .word-container .word.primary {
+        color: #ffffff;
+      }
+      #pre-test-controls,
+      #active-test-controls,
+      #post-test-controls {
+        text-align: center;
+        margin-top: 8px;
+      }
+      #start-button,
+      #restart-button,
+      #skip-current,
+      #view-current {
+        width: 100%;
+        padding: 12px;
+        margin: 4px 0;
+        border: none;
+        border-radius: 8px;
+        background: #27ff00;
+        color: #000;
+        font-weight: 800;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      #start-button:hover,
+      #restart-button:hover,
+      #skip-current:hover,
+      #view-current:hover {
+        background: #1dd800;
+      }
+      #active-test-controls,
+      #post-test-controls {
+        display: none;
+      }
+      #current-sign {
+        text-align: center;
+      }
+      #result-modal,
+      #instruction-modal,
+      #settings-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .modal-content {
+        background: #1e1e1e;
+        border-radius: 16px;
+        padding: 24px;
+        text-align: center;
+        width: 80%;
+        max-width: 320px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.4s ease-out;
+      }
+      .modal-content h2 {
+        margin-top: 0;
+        font-size: 26px;
+        color: #27ff00;
+        margin-bottom: 16px;
+      }
+      .modal-content p {
+        font-size: 16px;
+        color: #ffffff;
+        margin-bottom: 24px;
+      }
+      .modal-button {
+        width: 100%;
+        padding: 12px;
+        background: #27ff00;
+        border: none;
+        border-radius: 8px;
+        color: #000;
+        font-weight: 800;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        margin-top: 8px;
+      }
+      .modal-button:hover {
+        background: #1dd800;
+      }
+      .modal-input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mobile-container">
+      <div class="material combined-container">
+        <div class="camera-feed">
+          <canvas class="output4" width="480" height="480"></canvas>
+          <div class="overlay">
+            <h1>Playground</h1>
+            <button class="settings-button" onclick="openSettings()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.14 12.936c.036-.304.06-.612.06-.936 0-.324-.024-.632-.07-.936l2.034-1.59a.483.483 0 0 0 .12-.624l-1.92-3.312a.48.48 0 0 0-.576-.216l-2.394.96a7.02 7.02 0 0 0-1.62-.936l-.36-2.52A.48.48 0 0 0 14.88 3h-3.84a.48.48 0 0 0-.48.42l-.36 2.52a7.007 7.007 0 0 0-1.62.936l-2.394-.96a.48.48 0 0 0-.576.216l-1.92 3.312a.48.48 0 0 0 .12.624l2.034 1.59c-.046.304-.07.612-.07.936 0 .324.024.632.07.936l-2.034 1.59a.483.483 0 0 0-.12.624l1.92 3.312c.144.252.456.348.72.216l2.394-.96c.504.384 1.05.696 1.62.936l.36 2.52c.06.264.264.42.48.42h3.84c.216 0 .42-.156.48-.42l.36-2.52c.57-.24 1.116-.552 1.62-.936l2.394.96c.264.132.576.036.72-.216l1.92-3.312a.48.48 0 0 0-.12-.624l-2.034-1.59ZM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2Z" fill="#27ff00"/>
+              </svg>
+            </button>
           </div>
         </div>
-        <div class="row justify-content-between">
-          <div class="col-md-6 text-between">
-            <div class="wordcontainer d-flex justify-content-between">
-              <div class="word"></div>
-            </div>
+        <div class="control-box">
+          <h2 id="current-sign">Waiting</h2>
+          <div class="info-row">
+            <div id="word-counter" class="word-counter">0/0</div>
+            <span class="timer" id="timer">00:00</span>
+          </div>
+          <div class="waiting-text"></div>
+          <div class="word-container" id="word-container"></div>
+          <div id="pre-test-controls">
+            <button id="start-button">Start</button>
+          </div>
+          <div id="active-test-controls">
+            <button id="skip-current">Skip</button>
+            <button id="view-current">View Sign</button>
+          </div>
+          <div id="post-test-controls">
+            <button id="restart-button">Restart</button>
           </div>
         </div>
       </div>
     </div>
-    <div class="row justify-content-center">
-      <div class="foot text-center">
-        <img src="./images/yt.webp" id=""style="width: 20px; height: 20px; margin-right: 5px;">
-        <a href="https://www.youtube.com/watch?v=7jd46k0xQxo&t=15s" id="youtube" target="_blank">YouTube</a>
+    <div id="result-modal">
+      <div class="modal-content">
+        <h2>Congratulations!</h2>
+        <p id="result-stats">You signed 0 words | SPM: 0</p>
+        <button id="modal-restart" class="modal-button">Restart</button>
       </div>
     </div>
-    <div class="container">
-      <div class="row justify-content-center">
-          <div class="col-md-6 text-center">
-              <canvas class="output4" width="480px" height="480px"></canvas>
-              <div style="visibility: hidden" class="control4"></div>
-          </div>
-          <div class="col-md-6 col-md-6 text-center position-relative flip-container">
-            <div class="flipper">
-                <div class="front">
-                    <div class="consistent-action" style="position: relative;">
-                        <div class="overlay-text" id="monke" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div class="waiting-text" id="">
-                                loading
-                            </div>
-                            <div class="click-text" id="">
-                              press monkey for help 
-                              <a class="clickable-text" onclick="skipWord()"><b>skip word</b></a>
-                          </div>
-                        </div>
-                        <img src="./images/monke.png" id="monke" style="width: 100%; height: auto; padding: 5%;">
-                    </div>
-                </div>
-                <div class="back">
-                  loading
-              </div>
-              </div>
-        </div>
-        </div>
+    <div id="instruction-modal">
+      <div class="modal-content">
+        <h2>How to Sign</h2>
+        <img id="instruction-gif" src="" alt="Sign Instruction" />
+        <p id="instruction-text">Watch the GIF to learn how to sign.</p>
+        <button id="instruction-close" class="modal-button">Close</button>
       </div>
     </div>
-  </div>
-
-  <script type="text/javascript" src="./static/scripts/generatewords.js"></script>
-  <script type="text/javascript" src="./static/scripts/holistic.js"></script>
-</body>
+    <div id="settings-modal">
+      <div class="modal-content">
+        <h2>Settings</h2>
+        <p>Set timer duration (seconds):</p>
+        <input id="timer-input" class="modal-input" type="number" min="10" value="60" />
+        <button id="settings-save" class="modal-button" onclick="saveSettings()">Save</button>
+        <button id="settings-close" class="modal-button" onclick="closeSettings()">Close</button>
+      </div>
+    </div>
+    <script>
+      function openSettings() {
+        document.getElementById("settings-modal").style.display = "flex";
+      }
+      function closeSettings() {
+        document.getElementById("settings-modal").style.display = "none";
+      }
+      function saveSettings() {
+        const newTime = parseInt(document.getElementById("timer-input").value);
+        if (!isNaN(newTime) && newTime > 0) {
+          countdownTime = newTime;
+          closeSettings();
+        }
+      }
+      function refreshPage() {
+        location.reload();
+      }
+    </script>
+    <script src="playground.js"></script>
+  </body>
 </html>
