@@ -12,6 +12,13 @@ const teamMembers = [
   { name: 'Ahmed', role: 'Co-Founder', linkedin: 'https://www.linkedin.com/in/ahmedzeee/' },
 ];
 
+const originalIdeaDevelopers = [
+  'Syoma Zharkov',
+  'Andrei Mazin',
+  'Markus Hoehn',
+  'Lane Burgett',
+];
+
 export default function WhoAreWe() {
   return (
     <Container id="who-are-we" sx={{ py: { xs: 8, sm: 12 }, textAlign: 'center' }}>
@@ -20,7 +27,7 @@ export default function WhoAreWe() {
           Who Are We?
         </Typography>
         <Typography variant="h6" sx={{ color: 'text.secondary', mb: 4 }}>
-          Deaflingo is a student-driven project based out of Vanderbilt University. 
+          Deaflingo is a student-driven project based out of Vanderbilt University.
         </Typography>
       </motion.div>
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
@@ -37,6 +44,11 @@ export default function WhoAreWe() {
             </Card>
           </motion.div>
         ))}
+      </Box>
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          Original idea developed by: {originalIdeaDevelopers.join(', ')}
+        </Typography>
       </Box>
     </Container>
   );
